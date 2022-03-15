@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app
+    build: .
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+      - bundle_install:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    platform: linux/x86_64
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    volumes:
+      - ./forDocker/mysql/conf.d:/etc/mysql/conf.d
+      - dbvol:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      TZ: "Asia/Tokyo"
+
+volumes:
+  bundle_install:
+  dbvol:
